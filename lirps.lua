@@ -42,7 +42,7 @@ _G.PurgeLirp = function()
         if o:IsA("Highlight") and o.Name == "Lirp_Highlight" then pcall(function() o:Destroy() end) end 
     end 
 end
-print("[Xeno System]: Engine Variables Loaded.")
+print("[Xeno System]: Configurations loaded successfully.")
 local P = game:GetService("Players")
 local RS = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
@@ -96,18 +96,82 @@ _G.VisualConnection = RS.RenderStepped:Connect(function()
         local targetHead = getClosest()
         if targetHead then Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), 0.15) end 
     end 
+end)
+print("[Xeno System]: Aim and Visual logic processing.")
+local P = game:GetService("Players")
+local RS = game:GetService("RunService")
+local LP = P.LocalPlayer
+local Cam = workspace.CurrentCamera
+
+_G.TriggerConnection = RS.RenderStepped:Connect(function()
+    if not _G.ScriptRunning then return end
     if _G.TriggerEnabled then 
-        local rp = RaycastParams.new() rp.FilterDescendantsInstances = {LP.Character} rp.FilterType = Enum.RaycastFilterType.Exclude 
+        local rp = RaycastParams.new() 
+        rp.FilterDescendantsInstances = {LP.Character} 
+        rp.FilterType = Enum.RaycastFilterType.Exclude 
         local res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)
         if res and res.Instance then 
-            local ch = res.Instance.Parent if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
+            local ch = res.Instance.Parent 
+            if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
             if ch and ch ~= LP.Character then 
-                local hum = ch:FindFirstChildOfClass("Humanoid") if hum and hum.Health > 0 then mouse1click() end 
+                local hum = ch:FindFirstChildOfClass("Humanoid") 
+                if hum and hum.Health > 0 then mouse1click() end 
             end 
         end 
     end 
 end)
-print("[Xeno System]: Logic Loops Activated.")
+print("[Xeno System]: Zero-delay Triggerbot engine loaded.")
+local CG = game:GetService("CoreGui")
+local LP = game:GetService("Players").LocalPlayer
+
+local SG_Upd = Instance.new("ScreenGui")
+SG_Upd.Name = "LirpHub_UpdateNotice"
+SG_Upd.ResetOnSpawn = false 
+pcall(function() SG_Upd.Parent = CG end)
+if not SG_Upd.Parent then SG_Upd.Parent = LP:WaitForChild("PlayerGui") end 
+
+local UF = Instance.new("Frame")
+UF.Size = UDim2.new(0, 320, 0, 120)
+UF.Position = UDim2.new(0.4, -10, 0.2, 0)
+UF.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+UF.BorderSizePixel = 1
+UF.BorderColor3 = Color3.fromRGB(230, 126, 34)
+UF.Active = true
+UF.Draggable = true
+UF.Parent = SG_Upd
+
+local UT = Instance.new("TextLabel")
+UT.Size = UDim2.new(1, 0, 0, 30)
+UT.BackgroundTransparency = 1
+UT.Text = "SYSTEM UPDATE NOTICE"
+UT.TextColor3 = Color3.fromRGB(230, 126, 34)
+UT.TextSize = 14
+UT.Font = Enum.Font.SourceSansBold
+UT.Parent = UF
+
+local UX = Instance.new("TextLabel")
+UX.Size = UDim2.new(1, -20, 0, 40)
+UX.Position = UDim2.new(0, 10, 0, 35)
+UX.BackgroundTransparency = 1
+UX.Text = "New script update available!\nPlease restart the script to apply changes."
+UX.TextColor3 = Color3.fromRGB(200, 200, 200)
+UX.TextSize = 13
+UX.Font = Enum.Font.SourceSansItalic
+UX.Parent = UF
+
+local UO = Instance.new("TextButton")
+UO.Size = UDim2.new(0, 80, 0, 25)
+UO.Position = UDim2.new(0, 120, 0, 85)
+UO.BackgroundColor3 = Color3.fromRGB(230, 126, 34)
+UO.Text = "Dismiss"
+UO.TextColor3 = Color3.fromRGB(255, 255, 255)
+UO.Font = Enum.Font.SourceSansBold
+UO.Parent = UF
+UO.MouseButton1Click:Connect(function() SG_Upd:Destroy() end)
+
+print("=========================================")
+print("[Xeno System]: New script update available!")
+print("=========================================")
 local CG = game:GetService("CoreGui")
 local UIS = game:GetService("UserInputService")
 local LP = game:GetService("Players").LocalPlayer
@@ -119,9 +183,11 @@ pcall(function() ScreenGui.Parent = CG end)
 if not ScreenGui.Parent then ScreenGui.Parent = LP:WaitForChild("PlayerGui") end 
 
 local KF = Instance.new("Frame") KF.Size = UDim2.new(0, 300, 0, 150) KF.Position = UDim2.new(0.4, 0, 0.4, 0) KF.BackgroundColor3 = Color3.fromRGB(15, 15, 18) KF.BorderSizePixel = 1 KF.BorderColor3 = Color3.fromRGB(140, 0, 255) KF.Active = true KF.Draggable = true KF.Parent = ScreenGui
-local KT = Instance.new("TextLabel") KT.Size = UDim2.new(1, 0, 0, 30) KT.BackgroundTransparency = 1 KT.Text = "LIRP HUB - Enter Key" KT.TextColor3 = Color3.fromRGB(255, 255, 255) KT.TextSize = 14 KT.Font = Enum.Font.SourceSansBold KT.Parent = KF
+local KT = Instance.new("TextLabel") KT.Size = UDim2.new(1, -30, 0, 30) KT.BackgroundTransparency = 1 KT.Text = "LIRP HUB - Enter Key" KT.TextColor3 = Color3.fromRGB(255, 255, 255) KT.TextSize = 14 KT.Font = Enum.Font.SourceSansBold KT.Parent = KF
 local KI = Instance.new("TextBox") KI.Size = UDim2.new(0, 240, 0, 30) KI.Position = UDim2.new(0, 30, 0, 50) KI.BackgroundColor3 = Color3.fromRGB(25, 25, 30) KI.TextColor3 = Color3.fromRGB(140, 0, 255) KI.Text = "" KI.PlaceholderText = "Paste Key Here..." KI.TextSize = 14 KI.Parent = KF
 local KB = Instance.new("TextButton") KB.Size = UDim2.new(0, 100, 0, 30) KB.Position = UDim2.new(0, 100, 0, 100) KB.BackgroundColor3 = Color3.fromRGB(140, 0, 255) KB.Text = "Verify" KB.TextColor3 = Color3.fromRGB(255, 255, 255) KB.Font = Enum.Font.SourceSansBold KB.Parent = KF
+local CloseKeyUI = Instance.new("TextButton") CloseKeyUI.Size = UDim2.new(0, 30, 0, 30) CloseKeyUI.Position = UDim2.new(1, -30, 0, 0) CloseKeyUI.BackgroundTransparency = 1 CloseKeyUI.Text = "X" CloseKeyUI.TextColor3 = Color3.fromRGB(255, 50, 50) CloseKeyUI.TextSize = 16 CloseKeyUI.Font = Enum.Font.SourceSansBold CloseKeyUI.Parent = KF
+CloseKeyUI.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
 local MainFrame = Instance.new("Frame") MainFrame.Size = UDim2.new(0, 560, 0, 380) MainFrame.Position = UDim2.new(0.3, 0, 0.25, 0) MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 14) MainFrame.BorderSizePixel = 1 MainFrame.BorderColor3 = Color3.fromRGB(35, 35, 45) MainFrame.Active = true MainFrame.Draggable = true MainFrame.Visible = false MainFrame.Parent = ScreenGui 
 local Sidebar = Instance.new("Frame") Sidebar.Size = UDim2.new(0, 45, 1, 0) Sidebar.BackgroundColor3 = Color3.fromRGB(8, 8, 10) Sidebar.BorderSizePixel = 0 Sidebar.Parent = MainFrame 
@@ -140,7 +206,7 @@ local aC = Instance.new("TextButton") aC.Size = UDim2.new(0, 14, 0, 14) aC.Posit
 local aL = Instance.new("TextLabel") aL.Size = UDim2.new(0, 250, 0, 14) aL.Position = UDim2.new(0, 40, 0, 30) aL.BackgroundTransparency = 1 aL.Text = "Enable Smooth Aimbot (Hold RMB)" aL.TextColor3 = Color3.fromRGB(220, 220, 220) aL.TextSize = 14 aL.TextXAlignment = Enum.TextXAlignment.Left aL.Font = Enum.Font.SourceSans aL.Parent = AP 
 aC.MouseButton1Click:Connect(function() _G.AimEnabled = not _G.AimEnabled; aC.BackgroundColor3 = _G.AimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35); if _G.FovCircle then _G.FovCircle.Visible = (_G.AimEnabled and ScreenGui.Enabled) end end)
 
-local tC = Instance.new("TextButton") tC.Size = UDim2.new(0, 14, 0, 14) tC.Position = UDim2.new(0, 15, 0, 65) wC=Color3.fromRGB(30,30,35) tC.BackgroundColor3 = wC tC.BorderSizePixel = 0 tC.Text = "" tC.Parent = AP 
+local tC = Instance.new("TextButton") tC.Size = UDim2.new(0, 14, 0, 14) tC.Position = UDim2.new(0, 15, 0, 65) local wC = Color3.fromRGB(30,30,35) tC.BackgroundColor3 = wC tC.BorderSizePixel = 0 tC.Text = "" tC.Parent = AP 
 local tL = Instance.new("TextLabel") tL.Size = UDim2.new(0, 250, 0, 14) tL.Position = UDim2.new(0, 40, 0, 65) tL.BackgroundTransparency = 1 tL.Text = "Enable Instant Triggerbot" tL.TextColor3 = Color3.fromRGB(220, 220, 220) tL.TextSize = 14 tL.TextXAlignment = Enum.TextXAlignment.Left tL.Font = Enum.Font.SourceSans tL.Parent = AP 
 tC.MouseButton1Click:Connect(function() _G.TriggerEnabled = not _G.TriggerEnabled; tC.BackgroundColor3 = _G.TriggerEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) end)
 
@@ -177,7 +243,7 @@ tConn = UIS.InputBegan:Connect(function(input, processed)
 end)
 
 UB.MouseButton1Click:Connect(function() 
-    if _G.PurgeLirp then _G.PurgeLirp() end; if _G.VisualConnection then _G.VisualConnection:Disconnect() end; if tConn then tConn:Disconnect() end
+    if _G.PurgeLirp then _G.PurgeLirp() end; if _G.VisualConnection then _G.VisualConnection:Disconnect() end; if _G.TriggerConnection then _G.TriggerConnection:Disconnect() end; if tConn then tConn:Disconnect() end
     task.wait(0.05) ScreenGui:Destroy() print("[Xeno]: Lirp Hub unloaded!")
 end)
 
