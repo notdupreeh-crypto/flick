@@ -97,26 +97,21 @@ local RS = game:GetService("RunService")
 local LP = game:GetService("Players").LocalPlayer
 local Cam = workspace.CurrentCamera
 
-local tA = Instance.new("TextButton") tA.Size = UDim2.new(0, 80, 1, 0) tA.Position = UDim2.new(0, 20, 0, 0) tA.BackgroundTransparency = 1 tA.Text = "Legit" tA.TextColor3 = Color3.fromRGB(120, 130, 230) tA.Font = Enum.Font.SourceSansBold tA.Parent = _G.LirpTB
-local tE = Instance.new("TextButton") tE.Size = UDim2.new(0, 80, 1, 0) tE.Position = UDim2.new(0, 110, 0, 0) tE.BackgroundTransparency = 1 tE.Text = "ESP" tE.TextColor3 = Color3.fromRGB(150, 150, 150) tE.Font = Enum.Font.SourceSansBold tE.Parent = _G.LirpTB
-local tR = Instance.new("TextButton") tR.Size = UDim2.new(0, 80, 1, 0) tR.Position = UDim2.new(0, 200, 0, 0) tR.BackgroundTransparency = 1 tR.Text = "Rage" tR.TextColor3 = Color3.fromRGB(150, 150, 150) tR.Font = Enum.Font.SourceSansBold tR.Parent = _G.LirpTB
+_G.tA = Instance.new("TextButton") _G.tA.Size = UDim2.new(0, 80, 1, 0) _G.tA.Position = UDim2.new(0, 20, 0, 0) _G.tA.BackgroundTransparency = 1 _G.tA.Text = "Legit" _G.tA.TextColor3 = Color3.fromRGB(120, 130, 230) _G.tA.Font = Enum.Font.SourceSansBold _G.tA.Parent = _G.LirpTB
+_G.tE = Instance.new("TextButton") _G.tE.Size = UDim2.new(0, 80, 1, 0) _G.tE.Position = UDim2.new(0, 110, 0, 0) _G.tE.BackgroundTransparency = 1 _G.tE.Text = "ESP" _G.tE.TextColor3 = Color3.fromRGB(150, 150, 150) _G.tE.Font = Enum.Font.SourceSansBold _G.tE.Parent = _G.LirpTB
+_G.tR = Instance.new("TextButton") _G.tR.Size = UDim2.new(0, 80, 1, 0) _G.tR.Position = UDim2.new(0, 200, 0, 0) _G.tR.BackgroundTransparency = 1 _G.tR.Text = "Rage" _G.tR.TextColor3 = Color3.fromRGB(150, 150, 150) _G.tR.Font = Enum.Font.SourceSansBold _G.tR.Parent = _G.LirpTB
 
-local AP = Instance.new("Frame") AP.Size = UDim2.new(1, -65, 1, -50) AP.Position = UDim2.new(0, 55, 0, 40) AP.BackgroundTransparency = 1 AP.Visible = true AP.Parent = _G.MF
-local EP = Instance.new("Frame") EP.Size = UDim2.new(1, -65, 1, -50) EP.Position = UDim2.new(0, 55, 0, 40) EP.BackgroundTransparency = 1 EP.Visible = false EP.Parent = _G.MF
-local RP = Instance.new("Frame") RP.Size = UDim2.new(1, -65, 1, -50) RP.Position = UDim2.new(0, 55, 0, 40) RP.BackgroundTransparency = 1 RP.Visible = false RP.Parent = _G.MF
+_G.AP = Instance.new("Frame") _G.AP.Size = UDim2.new(1, -65, 1, -50) _G.AP.Position = UDim2.new(0, 55, 0, 40) _G.AP.BackgroundTransparency = 1 _G.AP.Visible = true _G.AP.Parent = _G.MF
+_G.EP = Instance.new("Frame") _G.EP.Size = UDim2.new(1, -65, 1, -50) _G.EP.Position = UDim2.new(0, 55, 0, 40) _G.EP.BackgroundTransparency = 1 _G.EP.Visible = false _G.EP.Parent = _G.MF
+_G.RP = Instance.new("Frame") _G.RP.Size = UDim2.new(1, -65, 1, -50) _G.RP.Position = UDim2.new(0, 55, 0, 40) _G.RP.BackgroundTransparency = 1 _G.RP.Visible = false _G.RP.Parent = _G.MF
 
-tA.MouseButton1Click:Connect(function() AP.Visible = true; EP.Visible = false; RP.Visible = false; tA.TextColor3 = Color3.fromRGB(120, 130, 230); tE.TextColor3 = Color3.fromRGB(150, 150, 150); tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
-tE.MouseButton1Click:Connect(function() AP.Visible = false; EP.Visible = true; RP.Visible = false; tA.TextColor3 = Color3.fromRGB(150, 150, 150); tE.TextColor3 = Color3.fromRGB(120, 130, 230); tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
-tR.MouseButton1Click:Connect(function() AP.Visible = false; EP.Visible = false; RP.Visible = true; tA.TextColor3 = Color3.fromRGB(150, 150, 150); tE.TextColor3 = Color3.fromRGB(150, 150, 150); tR.TextColor3 = Color3.fromRGB(120, 130, 230) end)
+_G.tA.MouseButton1Click:Connect(function() _G.AP.Visible = true; _G.EP.Visible = false; _G.RP.Visible = false; _G.tA.TextColor3 = Color3.fromRGB(120, 130, 230); _G.tE.TextColor3 = Color3.fromRGB(150, 150, 150); _G.tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
+_G.tE.MouseButton1Click:Connect(function() _G.AP.Visible = false; _G.EP.Visible = true; _G.RP.Visible = false; _G.tA.TextColor3 = Color3.fromRGB(150, 150, 150); _G.tE.TextColor3 = Color3.fromRGB(120, 130, 230); _G.tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
+_G.tR.MouseButton1Click:Connect(function() _G.AP.Visible = false; _G.EP.Visible = false; _G.RP.Visible = true; _G.tA.TextColor3 = Color3.fromRGB(150, 150, 150); _G.tE.TextColor3 = Color3.fromRGB(150, 150, 150); _G.tR.TextColor3 = Color3.fromRGB(120, 130, 230) end)
 
-local aC = Instance.new("TextButton") aC.Size = UDim2.new(0, 14, 0, 14) aC.Position = UDim2.new(0, 15, 0, 25) aC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) aC.Text = "" aC.Parent = AP
-local aL = Instance.new("TextLabel") aL.Size = UDim2.new(0, 250, 0, 14) aL.Position = UDim2.new(0, 40, 0, 25) aL.BackgroundTransparency = 1 aL.Text = "Enable Aimbot" aL.TextColor3 = Color3.fromRGB(220, 220, 220) aL.TextXAlignment = Enum.TextXAlignment.Left aL.Font = Enum.Font.SourceSans aL.Parent = AP
+local aC = Instance.new("TextButton") aC.Size = UDim2.new(0, 14, 0, 14) aC.Position = UDim2.new(0, 15, 0, 25) aC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) aC.Text = "" aC.Parent = _G.AP
+local aL = Instance.new("TextLabel") aL.Size = UDim2.new(0, 250, 0, 14) aL.Position = UDim2.new(0, 40, 0, 25) aL.BackgroundTransparency = 1 aL.Text = "Enable Aimbot" aL.TextColor3 = Color3.fromRGB(220, 220, 220) aL.TextXAlignment = Enum.TextXAlignment.Left aL.Font = Enum.Font.SourceSans aL.Parent = _G.AP
 aC.MouseButton1Click:Connect(function() _G.AimEnabled = not _G.AimEnabled; aC.BackgroundColor3 = _G.AimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) end)
-print("[Xeno PC]: Part 7.1 Tabs Synchronized.")
-local UIS = game:GetService("UserInputService")
-local RS = game:GetService("RunService")
-local LP = game:GetService("Players").LocalPlayer
-local Cam = workspace.CurrentCamera
 
 local awC = Instance.new("TextButton") awC.Size = UDim2.new(0, 14, 0, 14) awC.Position = UDim2.new(0, 15, 0, 55) awC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) awC.Text = "" awC.Parent = _G.AP
 local awL = Instance.new("TextLabel") awL.Size = UDim2.new(0, 250, 0, 14) awL.Position = UDim2.new(0, 40, 0, 55) awL.BackgroundTransparency = 1 awL.Text = "Aimbot Wall Check" awL.TextColor3 = Color3.fromRGB(220, 220, 220) awL.TextXAlignment = Enum.TextXAlignment.Left awL.Font = Enum.Font.SourceSans awL.Parent = _G.AP
@@ -131,15 +126,15 @@ local btnPlus = Instance.new("TextButton") btnPlus.Size = UDim2.new(0, 40, 0, 25
 local btnMinus = Instance.new("TextButton") btnMinus.Size = UDim2.new(0, 40, 0, 25) btnMinus.Position = UDim2.new(0, 65, 0, 140) btnMinus.BackgroundColor3 = Color3.fromRGB(35, 35, 40) btnMinus.Text = "[-]" btnMinus.TextColor3 = Color3.fromRGB(255, 255, 255) btnMinus.Font = Enum.Font.SourceSansBold btnMinus.Parent = _G.AP
 btnPlus.MouseButton1Click:Connect(function() _G.LirpFOV = math.min(_G.LirpFOV + 20, 600) fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV) end)
 btnMinus.MouseButton1Click:Connect(function() _G.LirpFOV = math.max(_G.LirpFOV - 20, 40) fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV) end)
-
-local cC = Instance.new("TextButton") cC.Size = UDim2.new(0, 14, 0, 14) cC.Position = UDim2.new(0, 15, 0, 30) cC.BackgroundColor3 = Color3.fromRGB(65, 80, 220) cC.Text = "" cC.Parent = _G.EP
-local cL = Instance.new("TextLabel") cL.Size = UDim2.new(0, 250, 0, 14) cL.Position = UDim2.new(0, 40, 0, 30) cL.BackgroundTransparency = 1 cL.Text = "Enable Chams Visuals" cL.TextColor3 = Color3.fromRGB(220, 220, 220) cL.TextXAlignment = Enum.TextXAlignment.Left cL.Font = Enum.Font.SourceSans cL.Parent = _G.EP
-cC.MouseButton1Click:Connect(function() _G.ChamsEnabled = not _G.ChamsEnabled; cC.BackgroundColor3 = _G.ChamsEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) if not _G.ChamsEnabled then _G.PurgeLirp() end end)
-print("[Xeno PC]: Part 7.2 Submenus Operational.")
+print("[Xeno PC]: Part 7.1 Elements Loaded.")
 local UIS = game:GetService("UserInputService")
 local RS = game:GetService("RunService")
 local LP = game:GetService("Players").LocalPlayer
 local Cam = workspace.CurrentCamera
+
+local cC = Instance.new("TextButton") cC.Size = UDim2.new(0, 14, 0, 14) cC.Position = UDim2.new(0, 15, 0, 30) cC.BackgroundColor3 = Color3.fromRGB(65, 80, 220) cC.Text = "" cC.Parent = _G.EP
+local cL = Instance.new("TextLabel") cL.Size = UDim2.new(0, 250, 0, 14) cL.Position = UDim2.new(0, 40, 0, 30) cL.BackgroundTransparency = 1 cL.Text = "Enable Chams Visuals" cL.TextColor3 = Color3.fromRGB(220, 220, 220) cL.TextXAlignment = Enum.TextXAlignment.Left cL.Font = Enum.Font.SourceSans cL.Parent = _G.EP
+cC.MouseButton1Click:Connect(function() _G.ChamsEnabled = not _G.ChamsEnabled; cC.BackgroundColor3 = _G.ChamsEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) if not _G.ChamsEnabled then _G.PurgeLirp() end end)
 
 local saC = Instance.new("TextButton") saC.Size = UDim2.new(0, 14, 0, 14) saC.Position = UDim2.new(0, 15, 0, 25) saC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) saC.Text = "" saC.Parent = _G.RP
 local saL = Instance.new("TextLabel") saL.Size = UDim2.new(0, 250, 0, 14) saL.Position = UDim2.new(0, 40, 0, 25) saL.BackgroundTransparency = 1 saL.Text = "Enable Silent Aimbot (Rage)" saL.TextColor3 = Color3.fromRGB(220, 220, 220) saL.TextXAlignment = Enum.TextXAlignment.Left saL.Font = Enum.Font.SourceSans saL.Parent = _G.RP
@@ -185,4 +180,4 @@ end)
 UB.MouseButton1Click:Connect(function()
     _G.PurgeLirp() if _G.VisualConnection then _G.VisualConnection:Disconnect() end if _G.CombatConnection then _G.CombatConnection:Disconnect() end if tConn then tConn:Disconnect() end task.wait(0.05) _G.LirpSG:Destroy() print("[Xeno PC]: Lirp Hub unloaded!")
 end)
-print("=========================================\n[Xeno PC]: Menu Loaded Automatically!\n=========================================")
+print("=========================================\n[Xeno PC]: Full Menu Loaded Successfully!\n=========================================")
