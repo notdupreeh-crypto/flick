@@ -16,7 +16,8 @@ _G.FovCircle.NumSides = 64
 _G.FovCircle.Filled = false
 _G.FovCircle.Transparency = 0.6
 _G.FovCircle.Visible = false
-
+print("[Xeno PC]: Part 1 Core Loaded.")
+local Cam = workspace.CurrentCamera
 _G.IsVisibleCheck = function(character)
     if not character or not character:FindFirstChild("Head") then return false end
     local rp = RaycastParams.new()
@@ -25,7 +26,7 @@ _G.IsVisibleCheck = function(character)
     local res = workspace:Raycast(Cam.CFrame.Position, (character.Head.Position - Cam.CFrame.Position), rp)
     return res == nil
 end
-
+print("[Xeno PC]: Part 2 Visibility System Loaded.")
 _G.PurgeLirp = function()
     _G.ScriptRunning = false
     _G.ChamsEnabled = false
@@ -39,10 +40,8 @@ _G.PurgeLirp = function()
     table.clear(_G.ActiveHighlights)
     for _, o in ipairs(game:GetDescendants()) do if o:IsA("Highlight") and o.Name == "Lirp_Highlight" then pcall(function() o:Destroy() end) end end 
 end
-print("[Xeno PC]: Part 1 Memory Config Loaded.")
+print("[Xeno PC]: Part 3 Purge Routines Injected.")
 local P = game:GetService("Players")
-local RS = game:GetService("RunService")
-local UIS = game:GetService("UserInputService")
 local LP = P.LocalPlayer
 local Cam = workspace.CurrentCamera
 
@@ -59,6 +58,12 @@ _G.GetClosestPlayer = function()
         end 
     end end return closest 
 end
+print("[Xeno PC]: Part 4 Target Selector Engaged.")
+local P = game:GetService("Players")
+local RS = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local LP = P.LocalPlayer
+local Cam = workspace.CurrentCamera
 
 _G.VisualConnection = RS.RenderStepped:Connect(function()
     if not _G.ScriptRunning then return end 
@@ -75,12 +80,10 @@ _G.VisualConnection = RS.RenderStepped:Connect(function()
     if (_G.AimEnabled or _G.SilentAimEnabled) and _G.FovCircle then _G.FovCircle.Position = Vector2.new(Cam.ViewportSize.X / 2, Cam.ViewportSize.Y / 2) _G.FovCircle.Radius = _G.LirpFOV end 
     if _G.AimEnabled and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then 
         local targetHead = _G.GetClosestPlayer()
-        if targetHead and (not _G.AimWallCheck or _G.IsVisibleCheck(targetHead.Parent)) then 
-            Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), 0.12) -- Плавный аим, чтобы обойти ПК-детект углов
-        end 
+        if targetHead and (not _G.AimWallCheck or _G.IsVisibleCheck(targetHead.Parent)) then Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), 0.12) end 
     end 
 end)
-print("[Xeno PC]: Part 2 Visual & Aim Engines Loaded.")
+print("[Xeno PC]: Part 5 Threads Synchronized.")
 local P = game:GetService("Players")
 local RS = game:GetService("RunService")
 local LP = P.LocalPlayer
@@ -91,27 +94,21 @@ _G.CombatConnection = RS.RenderStepped:Connect(function()
     if _G.AntiAimEnabled and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
         LP.Character.HumanoidRootPart.CFrame = LP.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(45), 0)
     end
+    -- Математический Silent Aim без краша namecall
+    if _G.SilentAimEnabled and game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
+        local tHead = _G.GetClosestPlayer()
+        if tHead then Cam.CFrame = CFrame.new(Cam.CFrame.Position, tHead.Position) end
+    end
     if _G.TriggerEnabled then 
         local rp = RaycastParams.new() rp.FilterDescendantsInstances = {LP.Character} rp.FilterType = Enum.RaycastFilterType.Exclude 
         local res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)
         if res and res.Instance then 
             local ch = res.Instance.Parent if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
-            if ch and ch ~= LP.Character and ch:FindFirstChildOfClass("Humanoid") and ch:FindFirstChildOfClass("Humanoid").Health > 0 then 
-                mouse1click() -- На ПК работает моментально и без лагов!
-            end 
+            if ch and ch ~= LP.Character and ch:FindFirstChildOfClass("Humanoid") and ch:FindFirstChildOfClass("Humanoid").Health > 0 then mouse1click() end 
         end 
     end 
 end)
-
-local oldNamecall
-oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-    local method = getnamecallmethod() local args = {...}
-    if _G.ScriptRunning and _G.SilentAimEnabled and (method == "FindPartOnRayWithIgnoreList" or method == "Raycast") then
-        local tHead = _G.GetClosestPlayer() if tHead then if method == "Raycast" then args = (tHead.Position - args).Unit * 1500 end return oldNamecall(self, unpack(args)) end
-    end
-    return oldNamecall(self, ...)
-end)
-print("[Xeno PC]: Part 3 Silent Aim & Triggerbot Loaded.")
+print("[Xeno PC]: Part 6 Combat Mechanisms Online.")
 local CG = game:GetService("CoreGui")
 local UIS = game:GetService("UserInputService")
 local LP = game:GetService("Players").LocalPlayer
@@ -136,7 +133,7 @@ tA.MouseButton1Click:Connect(function() AP.Visible = true; EP.Visible = false; R
 tE.MouseButton1Click:Connect(function() AP.Visible = false; EP.Visible = true; RP.Visible = false; tA.TextColor3 = Color3.fromRGB(150, 150, 150); tE.TextColor3 = Color3.fromRGB(120, 130, 230); tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
 tR.MouseButton1Click:Connect(function() AP.Visible = false; EP.Visible = false; RP.Visible = true; tA.TextColor3 = Color3.fromRGB(150, 150, 150); tE.TextColor3 = Color3.fromRGB(150, 150, 150); tR.TextColor3 = Color3.fromRGB(120, 130, 230) end)
 
-local aC = Instance.new("TextButton") aC.Size = UDim2.new(0, 14, 0, 14) aC.Position = UDim2.new(0, 15, 0, 25) aC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) aC.Text = "" aC.Parent = AP
+local aC = Instance.new("TextButton") aC.Size = UDim2.new(0, 14, 0, 14) aC.Position = UDim2.new(0, 15, 0, 25) aC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) aC.BorderSizePixel = 0 aC.Text = "" aC.Parent = AP
 local aL = Instance.new("TextLabel") aL.Size = UDim2.new(0, 250, 0, 14) aL.Position = UDim2.new(0, 40, 0, 25) aL.BackgroundTransparency = 1 aL.Text = "Enable Aimbot" aL.TextColor3 = Color3.fromRGB(220, 220, 220) aL.TextXAlignment = Enum.TextXAlignment.Left aL.Font = Enum.Font.SourceSans aL.Parent = AP
 aC.MouseButton1Click:Connect(function() _G.AimEnabled = not _G.AimEnabled; aC.BackgroundColor3 = _G.AimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) if _G.FovCircle then _G.FovCircle.Visible = (_G.AimEnabled and _G.LirpSG.Enabled) end end)
 
@@ -158,11 +155,11 @@ local cC = Instance.new("TextButton") cC.Size = UDim2.new(0, 14, 0, 14) cC.Posit
 local cL = Instance.new("TextLabel") cL.Size = UDim2.new(0, 250, 0, 14) cL.Position = UDim2.new(0, 40, 0, 30) cL.BackgroundTransparency = 1 cL.Text = "Enable Chams Visuals" cL.TextColor3 = Color3.fromRGB(220, 220, 220) cL.TextXAlignment = Enum.TextXAlignment.Left cL.Font = Enum.Font.SourceSans cL.Parent = EP
 cC.MouseButton1Click:Connect(function() _G.ChamsEnabled = not _G.ChamsEnabled; cC.BackgroundColor3 = _G.ChamsEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) if not _G.ChamsEnabled then _G.PurgeLirp() end end)
 
-local saC = Instance.new("TextButton") saC.Size = UDim2.new(0, 14, 0, 14) saC.Position = UDim2.new(0, 15, 0, 25) saC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) saC.Text = "" saC.Parent = RP
+local saC = Instance.new("TextButton") saC.Size = UDim2.new(0, 14, 0, 14) saC.Position = UDim2.new(0, 15, 0, 25) saC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) saC.BorderSizePixel = 0 saC.Text = "" saC.Parent = RP
 local saL = Instance.new("TextLabel") saL.Size = UDim2.new(0, 250, 0, 14) saL.Position = UDim2.new(0, 40, 0, 25) saL.BackgroundTransparency = 1 saL.Text = "Enable Silent Aimbot (Rage)" saL.TextColor3 = Color3.fromRGB(220, 220, 220) saL.TextXAlignment = Enum.TextXAlignment.Left saL.Font = Enum.Font.SourceSans saL.Parent = RP
 saC.MouseButton1Click:Connect(function() _G.SilentAimEnabled = not _G.SilentAimEnabled saC.BackgroundColor3 = _G.SilentAimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) end)
 
-local rC = Instance.new("TextButton") rC.Size = UDim2.new(0, 14, 0, 14) rC.Position = UDim2.new(0, 15, 0, 60) rC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) rC.Text = "" rC.Parent = RP
+local rC = Instance.new("TextButton") rC.Size = UDim2.new(0, 14, 0, 14) rC.Position = UDim2.new(0, 15, 0, 60) rC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) rC.BorderSizePixel = 0 rC.Text = "" rC.Parent = RP
 local rL = Instance.new("TextLabel") rL.Size = UDim2.new(0, 250, 0, 14) rL.Position = UDim2.new(0, 40, 0, 60) rL.BackgroundTransparency = 1 rL.Text = "Enable Anti-Aim (Spin)" rL.TextColor3 = Color3.fromRGB(220, 220, 220) rL.TextXAlignment = Enum.TextXAlignment.Left rL.Font = Enum.Font.SourceSans rL.Parent = RP
 rC.MouseButton1Click:Connect(function() _G.AntiAimEnabled = not _G.AntiAimEnabled rC.BackgroundColor3 = _G.AntiAimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) end)
 
@@ -175,4 +172,4 @@ end)
 UB.MouseButton1Click:Connect(function()
     _G.PurgeLirp() if _G.VisualConnection then _G.VisualConnection:Disconnect() end if _G.CombatConnection then _G.CombatConnection:Disconnect() end if tConn then tConn:Disconnect() end task.wait(0.05) _G.LirpSG:Destroy() print("[Xeno PC]: Lirp Hub unloaded!")
 end)
-print("=========================================\n[Xeno PC]: ALL ULTIMATE FEATURES LOADED!\n=========================================")
+print("=========================================\n[Xeno PC]: GUI Operational & Waiting Bind...\n=========================================")
