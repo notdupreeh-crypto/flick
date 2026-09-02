@@ -8,10 +8,11 @@ _G.AntiAimEnabled = false
 _G.LirpFOV = 120
 _G.ActiveHighlights = {}
 
-print("[Xeno PC]: Part 1 Protected Config Loaded.")
+print("[Xeno PC]: Part 1 Configuration Engine Loaded.")
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local Cam = workspace.CurrentCamera
+local Mouse = LP:GetMouse()
 
 _G.IsVisibleCheck = function(character)
     if not character or not character:FindFirstChild("Head") then return false end
@@ -21,25 +22,38 @@ _G.IsVisibleCheck = function(character)
     local res = workspace:Raycast(Cam.CFrame.Position, (character.Head.Position - Cam.CFrame.Position), rp)
     return res == nil
 end
-print("[Xeno PC]: Part 2 Visibility System Loaded.")
-local P = game:GetService("Players")
-local LP = P.LocalPlayer
-local Cam = workspace.CurrentCamera
 
 _G.GetClosestPlayer = function()
     local closest, shortestDist = nil, _G.LirpFOV 
-    for _, p in ipairs(P:GetPlayers()) do if p ~= LP and p.Character and p.Character:FindFirstChild("Head") then 
-        local hum = p.Character:FindFirstChildOfClass("Humanoid")
-        if hum and hum.Health > 0 then 
-            local pos, onScreen = Cam:WorldToViewportPoint(p.Character.Head.Position)
-            if onScreen then 
-                local dist = (Vector2.new(pos.X, pos.Y) - Vector2.new(LP:GetMouse().X, LP:GetMouse().Y)).Magnitude 
-                if dist < shortestDist then shortestDist = dist closest = p.Character.Head end 
+    for _, p in ipairs(P:GetPlayers()) do 
+        if p ~= LP and p.Character and p.Character:FindFirstChild("Head") then 
+            local hum = p.Character:FindFirstChildOfClass("Humanoid")
+            if hum and hum.Health > 0 then 
+                local pos, onScreen = Cam:WorldToViewportPoint(p.Character.Head.Position)
+                if onScreen then 
+                    local dist = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude 
+                    if dist < shortestDist then shortestDist = dist closest = p.Character.Head end 
+                end 
             end 
         end 
-    end end return closest 
+    end 
+    return closest 
 end
-print("[Xeno PC]: Part 3 Target Engine Injected.")
+
+local oldIndex
+oldIndex = hookmetamethod(game, "__index", function(self, index)
+    if _G.ScriptRunning and _G.SilentAimEnabled and not checkcaller() then
+        if self == Mouse and (index == "Hit" or index == "Target") then
+            local targetHead = _G.GetClosestPlayer()
+            if targetHead then
+                if index == "Hit" then return targetHead.CFrame
+                elseif index == "Target" then return targetHead end
+            end
+        end
+    end
+    return oldIndex(self, index)
+end)
+print("[Xeno PC]: Part 2 Safe Metatable Hooks Active.")
 _G.PurgeLirp = function()
     _G.ScriptRunning = false
     _G.ChamsEnabled = false
@@ -53,7 +67,7 @@ _G.PurgeLirp = function()
     table.clear(_G.ActiveHighlights)
     for _, o in ipairs(game:GetDescendants()) do if o:IsA("Highlight") and o.Name == "Lirp_Highlight" then pcall(function() o:Destroy() end) end end 
 end
-print("[Xeno PC]: Part 4 Clean Utilities Ready.")
+print("[Xeno PC]: Part 3 Garbage Collector Injected.")
 local P = game:GetService("Players")
 local RS = game:GetService("RunService")
 local LP = P.LocalPlayer
@@ -71,33 +85,57 @@ _G.VisualConnection = RS.RenderStepped:Connect(function()
         end end
     else _G.PurgeLirp() end 
 end)
-print("[Xeno PC]: Part 5 Visual Render Active.")
+print("[Xeno PC]: Part 4 ESP Thread Synced.")
+local RS = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local LP = game:GetService("Players").LocalPlayer
+local Cam = workspace.CurrentCamera
+
+_G.CombatConnection = RS.RenderStepped:Connect(function()
+    if not _G.ScriptRunning then return end
+    if (_G.AimEnabled or _G.SilentAimEnabled) and _G.FovGuiCircle then 
+        _G.FovGuiCircle.Visible = true _G.FovGuiCircle.Size = UDim2.new(0, _G.LirpFOV * 2, 0, _G.LirpFOV * 2) _G.FovGuiCircle.Position = UDim2.new(0.5, -_G.LirpFOV, 0.5, -_G.LirpFOV)
+    else if _G.FovGuiCircle then _G.FovGuiCircle.Visible = false end end 
+    if _G.AimEnabled and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then 
+        local target = _G.GetClosestPlayer()
+        if target and (not _G.AimWallCheck or _G.IsVisibleCheck(target.Parent)) then Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, target.Position), 0.12) end 
+    end 
+    if _G.AntiAimEnabled and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+        local char = LP.Character local hum = char:FindFirstChildOfClass("Humanoid") if hum then hum.AutoRotate = false end
+        char.HumanoidRootPart.CFrame = char.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(65), 0)
+    else if LP.Character and LP.Character:FindFirstChildOfClass("Humanoid") then LP.Character:FindFirstChildOfClass("Humanoid").AutoRotate = true end end
+    if _G.TriggerEnabled then 
+        local rp = RaycastParams.new() rp.FilterDescendantsInstances = {LP.Character} rp.FilterType = Enum.RaycastFilterType.Exclude 
+        local res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)
+        if res and res.Instance then 
+            local ch = res.Instance.Parent if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
+            if ch and ch ~= LP.Character and ch:FindFirstChildOfClass("Humanoid") and ch:FindFirstChildOfClass("Humanoid").Health > 0 then mouse1click() end 
+        end 
+    end 
+end)
+print("[Xeno PC]: Part 5 Combat Automation Online.")
 local CG = game:GetService("CoreGui")
 local LP = game:GetService("Players").LocalPlayer
 
-_G.LirpSG = Instance.new("ScreenGui") _G.LirpSG.Name = "LirpHub_MainLayout" _G.LirpSG.ResetOnSpawn = false
+_G.LirpSG = Instance.new("ScreenGui") _G.LirpSG.Name = "LirpHub_PC_Layout" _G.LirpSG.ResetOnSpawn = false
 pcall(function() _G.LirpSG.Parent = CG end) if not _G.LirpSG.Parent then _G.LirpSG.Parent = LP:WaitForChild("PlayerGui") end
 
 _G.FovGuiCircle = Instance.new("Frame") _G.FovGuiCircle.Name = "Lirp_FOV" _G.FovGuiCircle.BackgroundTransparency = 0.85 _G.FovGuiCircle.BackgroundColor3 = Color3.fromRGB(140, 0, 255) _G.FovGuiCircle.BorderSizePixel = 0 _G.FovGuiCircle.Visible = false _G.FovGuiCircle.Parent = _G.LirpSG
 local UICorner = Instance.new("UICorner") UICorner.CornerRadius = UDim.new(1, 0) UICorner.Parent = _G.FovGuiCircle
 
 _G.MF = Instance.new("Frame") _G.MF.Size = UDim2.new(0, 560, 0, 380) _G.MF.Position = UDim2.new(0.3, 0, 0.25, 0) _G.MF.BackgroundColor3 = Color3.fromRGB(12, 12, 14) _G.MF.BorderSizePixel = 1 _G.MF.BorderColor3 = Color3.fromRGB(35, 35, 45) _G.MF.Active = true _G.MF.Draggable = true _G.MF.Parent = _G.LirpSG
-_G.SB = Instance.new("Frame") _G.SB.Size = UDim2.new(0, 45, 1, 0) _G.SB.BackgroundColor3 = Color3.fromRGB(8, 8, 10) _G.SB.Parent = _G.MF
-_G.BL = Instance.new("Frame") _G.BL.Size = UDim2.new(1, 0, 0, 2) _G.BL.BackgroundColor3 = Color3.fromRGB(65, 80, 220) _G.BL.Parent = _G.MF
+local SB = Instance.new("Frame") SB.Size = UDim2.new(0, 45, 1, 0) SB.BackgroundColor3 = Color3.fromRGB(8, 8, 10) SB.Parent = _G.MF
+local BL = Instance.new("Frame") BL.Size = UDim2.new(1, 0, 0, 2) BL.BackgroundColor3 = Color3.fromRGB(65, 80, 220) BL.Parent = _G.MF
 _G.LirpTB = Instance.new("Frame") _G.LirpTB.Size = UDim2.new(1,-45,0,30) _G.LirpTB.Position = UDim2.new(0, 45, 0, 2) _G.LirpTB.BackgroundColor3 = Color3.fromRGB(15, 15, 18) _G.LirpTB.Parent = _G.MF
-print("[Xeno PC]: Part 6 Frame Construction Ready.")
+print("[Xeno PC]: Part 6 User Interface Base Injected.")
 local UIS = game:GetService("UserInputService")
-local RS = game:GetService("RunService")
-local LP = game:GetService("Players").LocalPlayer
-local Cam = workspace.CurrentCamera
-
 local tA = Instance.new("TextButton") tA.Size = UDim2.new(0, 80, 1, 0) tA.Position = UDim2.new(0, 20, 0, 0) tA.BackgroundTransparency = 1 tA.Text = "Legit" tA.TextColor3 = Color3.fromRGB(120, 130, 230) tA.Font = Enum.Font.SourceSansBold tA.Parent = _G.LirpTB
 local tE = Instance.new("TextButton") tE.Size = UDim2.new(0, 80, 1, 0) tE.Position = UDim2.new(0, 110, 0, 0) tE.BackgroundTransparency = 1 tE.Text = "ESP" tE.TextColor3 = Color3.fromRGB(150, 150, 150) tE.Font = Enum.Font.SourceSansBold tE.Parent = _G.LirpTB
 local tR = Instance.new("TextButton") tR.Size = UDim2.new(0, 80, 1, 0) tR.Position = UDim2.new(0, 200, 0, 0) tR.BackgroundTransparency = 1 tR.Text = "Rage" tR.TextColor3 = Color3.fromRGB(150, 150, 150) tR.Font = Enum.Font.SourceSansBold tR.Parent = _G.LirpTB
 
 local AP = Instance.new("Frame") AP.Size = UDim2.new(1, -65, 1, -50) AP.Position = UDim2.new(0, 55, 0, 40) AP.BackgroundTransparency = 1 AP.Visible = true AP.Parent = _G.MF
 local EP = Instance.new("Frame") EP.Size = UDim2.new(1, -65, 1, -50) EP.Position = UDim2.new(0, 55, 0, 40) EP.BackgroundTransparency = 1 EP.Visible = false EP.Parent = _G.MF
-local RP = Instance.new("Frame") RP.Size = UDim2.new(1, -65, 1, -50) RP.Position = UDim2.new(0, 55, 0, 40) RP.BackgroundTransparency = 1 RP.Visible = false AP.Parent = _G.MF
+local RP = Instance.new("Frame") RP.Size = UDim2.new(1, -65, 1, -50) RP.Position = UDim2.new(0, 55, 0, 40) RP.BackgroundTransparency = 1 RP.Visible = false RP.Parent = _G.MF
 
 tA.MouseButton1Click:Connect(function() AP.Visible = true; EP.Visible = false; RP.Visible = false; tA.TextColor3 = Color3.fromRGB(120, 130, 230); tE.TextColor3 = Color3.fromRGB(150, 150, 150); tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
 tE.MouseButton1Click:Connect(function() AP.Visible = false; EP.Visible = true; RP.Visible = false; tA.TextColor3 = Color3.fromRGB(150, 150, 150); tE.TextColor3 = Color3.fromRGB(120, 130, 230); tR.TextColor3 = Color3.fromRGB(150, 150, 150) end)
@@ -135,49 +173,11 @@ rC.MouseButton1Click:Connect(function() _G.AntiAimEnabled = not _G.AntiAimEnable
 
 local UB = Instance.new("TextButton") UB.Size = UDim2.new(0, 180, 0, 30) UB.Position = UDim2.new(0, 55, 1, -40) UB.BackgroundColor3 = Color3.fromRGB(25, 25, 30) UB.BorderSizePixel = 1 UB.BorderColor3 = Color3.fromRGB(40, 40, 50) UB.Text = "Unload Lirp Hub" UB.TextColor3 = Color3.fromRGB(160, 160, 160) UB.Font = Enum.Font.SourceSans UB.Parent = _G.MF
 
-_G.CombatConnection = RS.RenderStepped:Connect(function()
-    if not _G.ScriptRunning then return end
-    if (_G.AimEnabled or _G.SilentAimEnabled) and _G.FovGuiCircle then 
-        _G.FovGuiCircle.Visible = true _G.FovGuiCircle.Size = UDim2.new(0, _G.LirpFOV * 2, 0, _G.LirpFOV * 2) _G.FovGuiCircle.Position = UDim2.new(0.5, -_G.LirpFOV, 0.5, -_G.LirpFOV)
-    else if _G.FovGuiCircle then _G.FovGuiCircle.Visible = false end end 
-    if _G.AimEnabled and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then 
-        local target = _G.GetClosestPlayer()
-        if target and (not _G.AimWallCheck or _G.IsVisibleCheck(target.Parent)) then Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, target.Position), 0.12) end 
-    end 
-    if _G.SilentAimEnabled and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
-        local target = _G.GetClosestPlayer() if target then Cam.CFrame = CFrame.new(Cam.CFrame.Position, target.Position) end
-    end
-    if _G.AntiAimEnabled and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
-        LP.Character.HumanoidRootPart.CFrame = LP.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(45), 0)
-    end
-    if _G.TriggerEnabled then 
-        local rp = RaycastParams.new() rp.FilterDescendantsInstances = {LP.Character} rp.FilterType = Enum.RaycastFilterType.Exclude 
-        local res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)
-        if res and res.Instance then 
-            local ch = res.Instance.Parent if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
-            if ch and ch ~= LP.Character and ch:FindFirstChildOfClass("Humanoid") and ch:FindFirstChildOfClass("Humanoid").Health > 0 then mouse1click() end 
-        end 
-    end 
-end)
-local tConn
-tConn = UIS.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.RightShift then 
-        _G.LirpSG.Enabled = not _G.LirpSG.Enabled 
-        if _G.FovGuiCircle then 
-            _G.FovGuiCircle.Visible = ((_G.AimEnabled or _G.SilentAimEnabled) and _G.LirpSG.Enabled) 
-        end 
-    end 
+local tConn tConn = UIS.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode.RightShift then _G.LirpSG.Enabled = not _G.LirpSG.Enabled if _G.FovGuiCircle then _G.FovGuiCircle.Visible = ((_G.AimEnabled or _G.SilentAimEnabled) and _G.LirpSG.Enabled) end end
 end)
 
 UB.MouseButton1Click:Connect(function()
-    _G.PurgeLirp() 
-    if _G.VisualConnection then _G.VisualConnection:Disconnect() end 
-    if _G.CombatConnection then _G.CombatConnection:Disconnect() end 
-    if tConn then tConn:Disconnect() end 
-    task.wait(0.05) 
-    _G.LirpSG:Destroy() 
-    print("[Xeno PC]: Lirp Hub unloaded!")
+    _G.PurgeLirp() if _G.VisualConnection then _G.VisualConnection:Disconnect() end if _G.CombatConnection then _G.CombatConnection:Disconnect() end if tConn then tConn:Disconnect() end task.wait(0.05) _G.LirpSG:Destroy() print("[Xeno PC]: Lirp Hub unloaded!")
 end)
-
-print("=========================================\n[Xeno PC]: Full Menu Loaded Automatically!\n=========================================")
-  
+print("=========================================\n[Xeno PC]: Lirp Hub V10.0 Fully Active!\n=========================================")
