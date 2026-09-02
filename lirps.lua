@@ -1,1 +1,224 @@
-local P = game:GetService("Players")local CG = game:GetService("CoreGui")local RS = game:GetService("RunService")local UIS = game:GetService("UserInputService")local LP = P.LocalPlayerlocal M = LP:GetMouse()local Cam = workspace.CurrentCameralocal CE = truelocal TE = falselocal AE = falselocal MV = truelocal SR = truelocal AH = {}local EC = Color3.fromRGB(255, 0, 50)local Smooth = 0.15_G.LirpFOV = 120local FovCircle = Drawing.new("Circle")FovCircle.Color = Color3.fromRGB(140, 0, 255)FovCircle.Thickness = 1FovCircle.NumSides = 64FovCircle.Filled = falseFovCircle.Transparency = 0.6FovCircle.Visible = falselocal function purge()for _, h in ipairs(AH) doif h and h.Parent then pcall(function() h:Destroy() end) endendtable.clear(AH)for _, o in ipairs(game:GetDescendants()) doif o:IsA("Highlight") and o.Name == "Lirp_Highlight" thenpcall(function() o:Destroy() end)endendif FovCircle then FovCircle.Visible = false endendlocal function apply(c)if not c or c == LP.Character then return endlocal h = c:FindFirstChildOfClass("Humanoid")if h and h.Health > 0 thenlocal hl = c:FindFirstChild("Lirp_Highlight")if not hl thenhl = Instance.new("Highlight")hl.Name = "Lirp_Highlight"hl.FillTransparency = 0.45hl.OutlineColor = Color3.fromRGB(255, 255, 255)hl.OutlineTransparency = 0.1hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTophl.Parent = ctable.insert(AH, hl)endhl.FillColor = ECendendlocal function getClosestPlayer()local closest, shortestDist = nil, _G.LirpFOVfor _, p in ipairs(P:GetPlayers()) doif p ~= LP and p.Character and p.Character:FindFirstChild("Head") thenlocal hum = p.Character:FindFirstChildOfClass("Humanoid")if hum and hum.Health > 0 thenlocal pos, onScreen = Cam:WorldToViewportPoint(p.Character.Head.Position)if onScreen thenlocal dist = (Vector2.new(pos.X, pos.Y) - Vector2.new(M.X, M.Y)).Magnitudeif dist < shortestDist thenshortestDist = distclosest = p.Character.Headendendendendendreturn closestendlocal vCvC = RS.RenderStepped:Connect(function()if not SR thenif vC then vC:Disconnect() endreturnendif CE thenfor _, p in ipairs(P:GetPlayers()) doif p.Character then apply(p.Character) endendelsepurge()endif AE and MV thenFovCircle.Position = Vector2.new(Cam.ViewportSize.X / 2, Cam.ViewportSize.Y / 2)FovCircle.Radius = _G.LirpFOVFovCircle.Visible = trueelseFovCircle.Visible = falseendif AE and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) thenlocal targetHead = getClosestPlayer()if targetHead thenCam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), Smooth)endendif TE thenlocal rp = RaycastParams.new()rp.FilterDescendantsInstances = {LP.Character}rp.FilterType = Enum.RaycastFilterType.Excludelocal res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)if res and res.Instance thenlocal ch = res.Instance.Parentif ch and not ch:FindFirstChildOfClass("Humanoid") thench = res.Instance.Parent.Parentendif ch and ch ~= LP.Character thenlocal hum = ch:FindFirstChildOfClass("Humanoid")if hum and hum.Health > 0 then mouse1click() endendendendend)local SG = Instance.new("ScreenGui")SG.Name = "Lirp_Flick_V9_2"SG.ResetOnSpawn = falsepcall(function() SG.Parent = CG end)if not SG.Parent then SG.Parent = LP:WaitForChild("PlayerGui") endlocal MF = Instance.new("Frame")MF.Size = UDim2.new(0, 560, 0, 380)MF.Position = UDim2.new(0.3, 0, 0.25, 0)MF.BackgroundColor3 = Color3.fromRGB(12, 12, 14)MF.BorderSizePixel = 1MF.BorderColor3 = Color3.fromRGB(35, 35, 45)MF.Active = trueMF.Draggable = trueMF.Parent = SGlocal SB = Instance.new("Frame")SB.Size = UDim2.new(0, 45, 1, 0)SB.BackgroundColor3 = Color3.fromRGB(8, 8, 10)SB.BorderSizePixel = 0SB.Parent = MFlocal BL = Instance.new("Frame")BL.Size = UDim2.new(1, 0, 0, 2)BL.BackgroundColor3 = Color3.fromRGB(65, 80, 220)BL.BorderSizePixel = 0BL.Parent = MFlocal TB = Instance.new("Frame")TB.Size = UDim2.new(1, -45, 0, 30)TB.Position = UDim2.new(0, 45, 0, 2)TB.BackgroundColor3 = Color3.fromRGB(15, 15, 18)TB.BorderSizePixel = 0TB.Parent = MFlocal tA = Instance.new("TextButton")tA.Size = UDim2.new(0, 100, 1, 0)tA.Position = UDim2.new(0, 20, 0, 0)tA.BackgroundTransparency = 1tA.Text = "Aimbot"tA.TextColor3 = Color3.fromRGB(150, 150, 150)tA.TextSize = 14tA.Font = Enum.Font.SourceSansBoldtA.Parent = TBlocal tE = Instance.new("TextButton")tE.Size = UDim2.new(0, 100, 1, 0)tE.Position = UDim2.new(0, 130, 0, 0)tE.BackgroundTransparency = 1tE.Text = "ESP"tE.TextColor3 = Color3.fromRGB(120, 130, 230)tE.TextSize = 14tE.Font = Enum.Font.SourceSansBoldtE.Parent = TBlocal AP = Instance.new("Frame")AP.Size = UDim2.new(1, -65, 1, -50)AP.Position = UDim2.new(0, 55, 0, 40)AP.BackgroundTransparency = 1AP.Visible = falseAP.Parent = MFlocal EP = Instance.new("Frame")EP.Size = UDim2.new(1, -65, 1, -50)EP.Position = UDim2.new(0, 55, 0, 40)EP.BackgroundTransparency = 1EP.Visible = trueEP.Parent = MFtA.MouseButton1Click:Connect(function()AP.Visible = trueEP.Visible = falsetA.TextColor3 = Color3.fromRGB(120, 130, 230)tE.TextColor3 = Color3.fromRGB(150, 150, 150)end)tE.MouseButton1Click:Connect(function()AP.Visible = falseEP.Visible = truetA.TextColor3 = Color3.fromRGB(150, 150, 150)tE.TextColor3 = Color3.fromRGB(120, 130, 230)end)local aC = Instance.new("TextButton")aC.Size = UDim2.new(0, 14, 0, 14)aC.Position = UDim2.new(0, 15, 0, 30)aC.BackgroundColor3 = Color3.fromRGB(30, 30, 35)aC.BorderSizePixel = 0aC.Text = ""aC.Parent = APlocal aL = Instance.new("TextLabel")aL.Size = UDim2.new(0, 250, 0, 14)aL.Position = UDim2.new(0, 40, 0, 30)aL.BackgroundTransparency = 1aL.Text = "Enable Smooth Aimbot (Hold RMB)"aL.TextColor3 = Color3.fromRGB(220, 220, 220)aL.TextSize = 14aL.TextXAlignment = Enum.TextXAlignment.LeftaL.Font = Enum.Font.SourceSansaL.Parent = APaC.MouseButton1Click:Connect(function()AE = not AEaC.BackgroundColor3 = AE and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35)end)local tC = Instance.new("TextButton")tC.Size = UDim2.new(0, 14, 0, 14)tC.Position = UDim2.new(0, 15, 0, 65)tC.BackgroundColor3 = Color3.fromRGB(30, 30, 35)tC.BorderSizePixel = 0tC.Text = ""tC.Parent = APlocal tL = Instance.new("TextLabel")tL.Size = UDim2.new(0, 250, 0, 14)tL.Position = UDim2.new(0, 40, 0, 65)tL.BackgroundTransparency = 1tL.Text = "Enable Instant Triggerbot"tL.TextColor3 = Color3.fromRGB(220, 220, 220)tL.TextSize = 14tL.TextXAlignment = Enum.TextXAlignment.LefttL.Font = Enum.Font.SourceSanstL.Parent = APtC.MouseButton1Click:Connect(function()TE = not TEtC.BackgroundColor3 = TE and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35)end)local fovLabel = Instance.new("TextLabel")fovLabel.Size = UDim2.new(0, 200, 0, 20)fovLabel.Position = UDim2.new(0, 15, 0, 105)fovLabel.BackgroundTransparency = 1fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV)fovLabel.TextColor3 = Color3.fromRGB(200, 200, 200)fovLabel.TextSize = 14fovLabel.TextXAlignment = Enum.TextXAlignment.LeftfovLabel.Font = Enum.Font.SourceSansfovLabel.Parent = APlocal btnPlus = Instance.new("TextButton")btnPlus.Size = UDim2.new(0, 40, 0, 25)btnPlus.Position = UDim2.new(0, 15, 0, 135)btnPlus.BackgroundColor3 = Color3.fromRGB(35, 35, 40)btnPlus.Text = "[+]"btnPlus.TextColor3 = Color3.fromRGB(255, 255, 255)btnPlus.Font = Enum.Font.SourceSansBoldbtnPlus.Parent = APlocal btnMinus = Instance.new("TextButton")btnMinus.Size = UDim2.new(0, 40, 0, 25)btnMinus.Position = UDim2.new(0, 65, 0, 135)btnMinus.BackgroundColor3 = Color3.fromRGB(35, 35, 40)btnMinus.Text = "[-]"btnMinus.TextColor3 = Color3.fromRGB(255, 255, 255)btnMinus.Font = Enum.Font.SourceSansBoldbtnMinus.Parent = APbtnPlus.MouseButton1Click:Connect(function()_G.LirpFOV = math.min(_G.LirpFOV + 20, 600)fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV)end)btnMinus.MouseButton1Click:Connect(function()_G.LirpFOV = math.max(_G.LirpFOV - 20, 40)fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV)end)local cC = Instance.new("TextButton")cC.Size = UDim2.new(0, 14, 0, 14)cC.Position = UDim2.new(0, 15, 0, 30)cC.BackgroundColor3 = Color3.fromRGB(65, 80, 220)cC.BorderSizePixel = 0cC.Text = ""cC.Parent = EPlocal cL = Instance.new("TextLabel")cL.Size = UDim2.new(0, 250, 0, 14)cL.Position = UDim2.new(0, 40, 0, 30)cL.BackgroundTransparency = 1cL.Text = "Enable Chams Visuals (All Players)"cL.TextColor3 = Color3.fromRGB(220, 220, 220)cL.TextSize = 14cL.TextXAlignment = Enum.TextXAlignment.LeftcL.Font = Enum.Font.SourceSanscL.Parent = EPcC.MouseButton1Click:Connect(function()CE = not CEif not CE thencC.BackgroundColor3 = Color3.fromRGB(30, 30, 35)purge()elsecC.BackgroundColor3 = Color3.fromRGB(65, 80, 220)endend)local UB = Instance.new("TextButton")UB.Size = UDim2.new(0, 180, 0, 30)UB.Position = UDim2.new(0, 55, 1, -40)UB.BackgroundColor3 = Color3.fromRGB(25, 25, 30)UB.BorderSizePixel = 1UB.BorderColor3 = Color3.fromRGB(40, 40, 50)UB.Text = "Unload Lirp Hub"UB.TextColor3 = Color3.fromRGB(160, 160, 160)UB.TextSize = 13UB.Font = Enum.Font.SourceSansUB.Parent = MFlocal UB2_Label = Instance.new("TextLabel")UB2_Label.Size = UDim2.new(0, 250, 0, 20)UB2_Label.Position = UDim2.new(1, -270, 1, -35)UB2_Label.BackgroundTransparency = 1UB2_Label.Text = "Press [Right Shift] to toggle UI window visibility"UB2_Label.TextColor3 = Color3.fromRGB(100, 100, 110)UB2_Label.TextSize = 12UB2_Label.TextXAlignment = Enum.TextXAlignment.RightUB2_Label.Font = Enum.Font.SourceSansItalicUB2_Label.Parent = MFlocal tConntConn = UIS.InputBegan:Connect(function(input, processed)if not processed and input.KeyCode == Enum.KeyCode.RightShift thenMV = not MVSG.Enabled = MVendend)UB.MouseButton1Click:Connect(function()SR = falseTE = falseCE = falseAE = falseif tConn then tConn:Disconnect() endif FovCircle then pcall(function() FovCircle:Destroy() end) endtask.wait(0.05)purge()SG:Destroy()print("[Xeno]: Lirp Hub unloaded!")end)print("=========================================")print("[Xeno System]: Flick Sniper Arena Lirp V9.2 Fix | LOADED")print("=========================================")
+_G.ScriptRunning = true
+_G.ChamsEnabled = true
+_G.TriggerEnabled = false
+_G.AimEnabled = false
+_G.LirpFOV = 120
+
+local P = game:GetService("Players")
+local RS = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local LP = P.LocalPlayer
+local M = LP:GetMouse()
+local Cam = workspace.CurrentCamera
+local ActiveHighlights = {}
+
+_G.FovCircle = Drawing.new("Circle")
+_G.FovCircle.Color = Color3.fromRGB(140, 0, 255)
+_G.FovCircle.Thickness = 1
+_G.FovCircle.NumSides = 64
+_G.FovCircle.Filled = false
+_G.FovCircle.Transparency = 0.6
+_G.FovCircle.Visible = false
+
+_G.PurgeLirp = function()
+    _G.ScriptRunning = false
+    _G.ChamsEnabled = false
+    _G.TriggerEnabled = false
+    _G.AimEnabled = false
+    if _G.FovCircle then _G.FovCircle.Visible = false end
+    for _, h in ipairs(ActiveHighlights) do 
+        if h and h.Parent then pcall(function() h:Destroy() end) end 
+    end 
+    table.clear(ActiveHighlights)
+    for _, o in ipairs(game:GetDescendants()) do 
+        if o:IsA("Highlight") and o.Name == "Lirp_Highlight" then pcall(function() o:Destroy() end) end 
+    end 
+end
+
+local function getClosestPlayer()
+    local closest, shortestDist = nil, _G.LirpFOV 
+    for _, p in ipairs(P:GetPlayers()) do 
+        if p ~= LP and p.Character and p.Character:FindFirstChild("Head") then 
+            local hum = p.Character:FindFirstChildOfClass("Humanoid")
+            if hum and hum.Health > 0 then 
+                local pos, onScreen = Cam:WorldToViewportPoint(p.Character.Head.Position)
+                if onScreen then 
+                    local dist = (Vector2.new(pos.X, pos.Y) - Vector2.new(M.X, M.Y)).Magnitude 
+                    if dist < shortestDist then shortestDist = dist closest = p.Character.Head end 
+                end 
+            end 
+        end 
+    end 
+    return closest 
+end
+
+_G.VisualConnection = RS.RenderStepped:Connect(function()
+    if not _G.ScriptRunning then return end 
+    
+    if _G.ChamsEnabled then 
+        for _, p in ipairs(P:GetPlayers()) do 
+            if p.Character and p ~= LP then 
+                local h = p.Character:FindFirstChildOfClass("Humanoid")
+                if h and h.Health > 0 then
+                    local hl = p.Character:FindFirstChild("Lirp_Highlight")
+                    if not hl then 
+                        hl = Instance.new("Highlight") hl.Name = "Lirp_Highlight" hl.FillTransparency = 0.45 
+                        hl.OutlineColor = Color3.fromRGB(255, 255, 255) hl.OutlineTransparency = 0.1 
+                        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop hl.Parent = p.Character table.insert(ActiveHighlights, hl) 
+                    end 
+                    hl.FillColor = Color3.fromRGB(255, 0, 50)
+                end
+            end 
+        end 
+    else _G.PurgeLirp() end 
+    
+    if _G.AimEnabled and _G.FovCircle then 
+        _G.FovCircle.Position = Vector2.new(Cam.ViewportSize.X / 2, Cam.ViewportSize.Y / 2)
+        _G.FovCircle.Radius = _G.LirpFOV 
+    end 
+    
+    if _G.AimEnabled and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then 
+        local targetHead = getClosestPlayer()
+        if targetHead then Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), 0.15) end 
+    end 
+    
+    if _G.TriggerEnabled then 
+        local rp = RaycastParams.new() rp.FilterDescendantsInstances = {LP.Character} rp.FilterType = Enum.RaycastFilterType.Exclude 
+        local res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)
+        if res and res.Instance then 
+            local ch = res.Instance.Parent if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
+            if ch and ch ~= LP.Character then 
+                local hum = ch:FindFirstChildOfClass("Humanoid") if hum and hum.Health > 0 then mouse1click() end 
+            end 
+        end 
+    end 
+end)
+print("=========================================")
+print("[LIRP ENGINE]: Core Functions Loaded Successfully!")
+print("=========================================")
+local CG = game:GetService("CoreGui")
+local UIS = game:GetService("UserInputService")
+local LP = game:GetService("Players").LocalPlayer
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "LirpHub_Interface"
+ScreenGui.ResetOnSpawn = false 
+pcall(function() ScreenGui.Parent = CG end)
+if not ScreenGui.Parent then ScreenGui.Parent = LP:WaitForChild("PlayerGui") end 
+
+local MF = Instance.new("Frame")
+MF.Size = UDim2.new(0, 560, 0, 380)
+MF.Position = UDim2.new(0.3, 0, 0.25, 0)
+MF.BackgroundColor3 = Color3.fromRGB(12, 12, 14)
+MF.BorderSizePixel = 1 MF.BorderColor3 = Color3.fromRGB(35, 35, 45)
+MF.Active = true MF.Draggable = true MF.Parent = ScreenGui 
+
+local SB = Instance.new("Frame")
+SB.Size = UDim2.new(0, 45, 1, 0)
+SB.BackgroundColor3 = Color3.fromRGB(8, 8, 10)
+SB.BorderSizePixel = 0 SB.Parent = MF 
+
+local BL = Instance.new("Frame")
+BL.Size = UDim2.new(1, 0, 0, 2)
+BL.BackgroundColor3 = Color3.fromRGB(65, 80, 220)
+BL.BorderSizePixel = 0 BL.Parent = MF 
+
+local TB = Instance.new("Frame")
+TB.Size = UDim2.new(1, -45, 0, 30)
+TB.Position = UDim2.new(0, 45, 0, 2)
+TB.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TB.BorderSizePixel = 0 TB.Parent = MF 
+
+local tA = Instance.new("TextButton")
+tA.Size = UDim2.new(0, 100, 1, 0) tA.Position = UDim2.new(0, 20, 0, 0) tA.BackgroundTransparency = 1 
+tA.Text = "Aimbot" tA.TextColor3 = Color3.fromRGB(150, 150, 150) tA.TextSize = 14 tA.Font = Enum.Font.SourceSansBold tA.Parent = TB 
+
+local tE = Instance.new("TextButton")
+tE.Size = UDim2.new(0, 100, 1, 0) tE.Position = UDim2.new(0, 130, 0, 0) tE.BackgroundTransparency = 1 
+tE.Text = "ESP" tE.TextColor3 = Color3.fromRGB(120, 130, 230) tE.TextSize = 14 tE.Font = Enum.Font.SourceSansBold tE.Parent = TB 
+
+local AP = Instance.new("Frame")
+AP.Size = UDim2.new(1, -65, 1, -50) AP.Position = UDim2.new(0, 55, 0, 40) AP.BackgroundTransparency = 1 AP.Visible = false AP.Parent = MF 
+
+local EP = Instance.new("Frame")
+EP.Size = UDim2.new(1, -65, 1, -50) EP.Position = UDim2.new(0, 55, 0, 40) EP.BackgroundTransparency = 1 EP.Visible = true EP.Parent = MF 
+
+tA.MouseButton1Click:Connect(function() AP.Visible = true EP.Visible = false tA.TextColor3 = Color3.fromRGB(120, 130, 230) tE.TextColor3 = Color3.fromRGB(150, 150, 150) end)
+tE.MouseButton1Click:Connect(function() AP.Visible = false EP.Visible = true tA.TextColor3 = Color3.fromRGB(150, 150, 150) tE.TextColor3 = Color3.fromRGB(120, 130, 230) end)
+
+local aC = Instance.new("TextButton")
+aC.Size = UDim2.new(0, 14, 0, 14) aC.Position = UDim2.new(0, 15, 0, 30) aC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) aC.BorderSizePixel = 0 aC.Text = "" aC.Parent = AP 
+
+local aL = Instance.new("TextLabel")
+aL.Size = UDim2.new(0, 250, 0, 14) aL.Position = UDim2.new(0, 40, 0, 30) aL.BackgroundTransparency = 1 
+aL.Text = "Enable Smooth Aimbot (Hold RMB)" aL.TextColor3 = Color3.fromRGB(220, 220, 220) aL.TextSize = 14 aL.TextXAlignment = Enum.TextXAlignment.Left aL.Font = Enum.Font.SourceSans aL.Parent = AP 
+
+aC.MouseButton1Click:Connect(function() 
+    _G.AimEnabled = not _G.AimEnabled 
+    aC.BackgroundColor3 = _G.AimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35)
+    if _G.FovCircle then _G.FovCircle.Visible = (_G.AimEnabled and ScreenGui.Enabled) end
+end)
+
+local tC = Instance.new("TextButton")
+tC.Size = UDim2.new(0, 14, 0, 14) tC.Position = UDim2.new(0, 15, 0, 65) tC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) tC.BorderSizePixel = 0 tC.Text = "" tC.Parent = AP 
+
+local tL = Instance.new("TextLabel")
+tL.Size = UDim2.new(0, 250, 0, 14) tL.Position = UDim2.new(0, 40, 0, 65) tL.BackgroundTransparency = 1 
+tL.Text = "Enable Instant Triggerbot" tL.TextColor3 = Color3.fromRGB(220, 220, 220) tL.TextSize = 14 tL.TextXAlignment = Enum.TextXAlignment.Left tL.Font = Enum.Font.SourceSans tL.Parent = AP 
+
+tC.MouseButton1Click:Connect(function() _G.TriggerEnabled = not _G.TriggerEnabled tC.BackgroundColor3 = _G.TriggerEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) end)
+
+local fovLabel = Instance.new("TextLabel")
+fovLabel.Size = UDim2.new(0, 200, 0, 20) fovLabel.Position = UDim2.new(0, 15, 0, 105) fovLabel.BackgroundTransparency = 1 
+fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV) fovLabel.TextColor3 = Color3.fromRGB(200, 200, 200) fovLabel.TextSize = 14 fovLabel.TextXAlignment = Enum.TextXAlignment.Left fovLabel.Font = Enum.Font.SourceSans fovLabel.Parent = AP 
+
+local btnPlus = Instance.new("TextButton")
+btnPlus.Size = UDim2.new(0, 40, 0, 25) btnPlus.Position = UDim2.new(0, 15, 0, 135) btnPlus.BackgroundColor3 = Color3.fromRGB(35, 35, 40) btnPlus.Text = "[+]" btnPlus.TextColor3 = Color3.fromRGB(255, 255, 255) btnPlus.Font = Enum.Font.SourceSansBold btnPlus.Parent = AP 
+
+local btnMinus = Instance.new("TextButton")
+btnMinus.Size = UDim2.new(0, 40, 0, 25) btnMinus.Position = UDim2.new(0, 65, 0, 135) btnMinus.BackgroundColor3 = Color3.fromRGB(35, 35, 40) btnMinus.Text = "[-]" btnMinus.TextColor3 = Color3.fromRGB(255, 255, 255) btnMinus.Font = Enum.Font.SourceSansBold btnMinus.Parent = AP 
+
+btnPlus.MouseButton1Click:Connect(function() _G.LirpFOV = math.min(_G.LirpFOV + 20, 600) fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV) end)
+btnMinus.MouseButton1Click:Connect(function() _G.LirpFOV = math.max(_G.LirpFOV - 20, 40) fovLabel.Text = "Aim FOV Radius: " .. tostring(_G.LirpFOV) end)
+
+local cC = Instance.new("TextButton")
+cC.Size = UDim2.new(0, 14, 0, 14) cC.Position = UDim2.new(0, 15, 0, 30) cC.BackgroundColor3 = Color3.fromRGB(65, 80, 220) cC.BorderSizePixel = 0 cC.Text = "" cC.Parent = EP 
+
+local cL = Instance.new("TextLabel")
+cL.Size = UDim2.new(0, 250, 0, 14) cL.Position = UDim2.new(0, 40, 0, 30) cL.BackgroundTransparency = 1 
+cL.Text = "Enable Chams Visuals (All Players)" cL.TextColor3 = Color3.fromRGB(220, 220, 220) cL.TextSize = 14 cL.TextXAlignment = Enum.TextXAlignment.Left cL.Font = Enum.Font.SourceSans cL.Parent = EP 
+
+cC.MouseButton1Click:Connect(function() 
+    _G.ChamsEnabled = not _G.ChamsEnabled 
+    if not _G.ChamsEnabled then cC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) if _G.PurgeLirp then _G.PurgeLirp() end else cC.BackgroundColor3 = Color3.fromRGB(65, 80, 220) _G.ScriptRunning = true _G.ChamsEnabled = true end 
+end)
+
+local UB = Instance.new("TextButton")
+UB.Size = UDim2.new(0, 180, 0, 30) UB.Position = UDim2.new(0, 55, 1, -40) UB.BackgroundColor3 = Color3.fromRGB(25, 25, 30) UB.BorderSizePixel = 1 UB.BorderColor3 = Color3.fromRGB(40, 40, 50) 
+UB.Text = "Unload Lirp Hub" UB.TextColor3 = Color3.fromRGB(160, 160, 160) UB.TextSize = 13 UB.Font = Enum.Font.SourceSans UB.Parent = MF 
+
+local UB2_Label = Instance.new("TextLabel")
+UB2_Label.Size = UDim2.new(0, 250, 0, 20) UB2_Label.Position = UDim2.new(1, -270, 1, -35) UB2_Label.BackgroundTransparency = 1 
+UB2_Label.Text = "Press [Right Shift] to toggle UI window visibility" UB2_Label.TextColor3 = Color3.fromRGB(100, 100, 110) UB2_Label.TextSize = 12 UB2_Label.TextXAlignment = Enum.TextXAlignment.Right UB2_Label.Font = Enum.Font.SourceSansItalic UB2_Label.Parent = MF 
+
+local tConn
+tConn = UIS.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode.RightShift then 
+        ScreenGui.Enabled = not ScreenGui.Enabled
+        if _G.FovCircle then _G.FovCircle.Visible = (_G.AimEnabled and ScreenGui.Enabled) end
+    end 
+end)
+
+UB.MouseButton1Click:Connect(function() 
+    if _G.PurgeLirp then _G.PurgeLirp() end 
+    if _G.VisualConnection then _G.VisualConnection:Disconnect() end 
+    if tConn then tConn:Disconnect() end 
+    task.wait(0.05) ScreenGui:Destroy() 
+    print("=========================================")
+    print("[Xeno System]: Lirp Hub successfully unloaded!")
+    print("=========================================")
+end)
+
+print("=========================================")
+print("[Xeno System]: Lirp Hub UI & Bind System | LOADED")
+print("=========================================")
