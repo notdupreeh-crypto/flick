@@ -1,11 +1,23 @@
 local P,CG,RS,UIS=game:GetService("Players"),game:GetService("CoreGui"),game:GetService("RunService"),game:GetService("UserInputService")
 local LP,M,CE,TE,MV,SR,AH=P.LocalPlayer,P.LocalPlayer:GetMouse(),true,false,true,true,{}
-local AE,FOV,Smooth=false,120,0.15 -- Настройки Аима (AE - включен ли, FOV - радиус, Smooth - плавность)
-local EC=Color3.fromRGB(255,0,50) local Cam=workspace.CurrentCamera
+local AE,Smooth=false,0.15 local EC=Color3.fromRGB(255,0,50) local Cam=workspace.CurrentCamera
+
+-- Global FOV settings
+_G.LirpFOV = 120
+
+-- FOV Circle Drawing
+local FovCircle = Drawing.new("Circle")
+FovCircle.Color = Color3.fromRGB(140, 0, 255)
+FovCircle.Thickness = 1
+FovCircle.NumSides = 64
+FovCircle.Filled = false
+FovCircle.Transparency = 0.6
+FovCircle.Visible = false
 
 local function purge()
     for _,h in ipairs(AH) do if h and h.Parent then pcall(function() h:Destroy() end) end end table.clear(AH)
     for _,o in ipairs(game:GetDescendants()) do if o:IsA("Highlight") and o.Name=="Lirp_Highlight" then pcall(function() o:Destroy() end) end end
+    if FovCircle then FovCircle.Visible = false end
 end
 
 local function apply(c)
@@ -22,9 +34,8 @@ local function apply(c)
     end
 end
 
--- Функция поиска ближайшей цели для Аимбота внутри FOV
 local function getClosestPlayer()
-    local closest, shortestDist = nil, FOV
+    local closest, shortestDist = nil, _G.LirpFOV
     for _, p in ipairs(P:GetPlayers()) do
         if p ~= LP and p.Character and p.Character:FindFirstChild("Head") then
             local hum = p.Character:FindFirstChildOfClass("Humanoid")
@@ -40,23 +51,27 @@ local function getClosestPlayer()
     return closest
 end
 
--- RenderStepped Loop (ESP, Triggerbot, Aimbot)
+-- Main Render Loop
 local vC
 vC = RS.RenderStepped:Connect(function()
     if not SR then if vC then vC:Disconnect() end return end
     
-    -- 1. ESP Logic
     if CE then for _,p in ipairs(P:GetPlayers()) do if p.Character then apply(p.Character) end end else purge() end
     
-    -- 2. Aimbot Logic (Smooth camera lerp to target head)
-    if AE and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then -- Работает при зажатой ПКМ
-        local targetHead = getClosestPlayer()
-        if targetHead then
-            Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), Smooth)
-        end
+    -- Dynamic FOV Circle update
+    if AE and MV then
+        FovCircle.Position = Vector2.new(Cam.ViewportSize.X / 2, Cam.ViewportSize.Y / 2)
+        FovCircle.Radius = _G.LirpFOV
+        FovCircle.Visible = true
+    else
+        FovCircle.Visible = false
     end
     
-    -- 3. Triggerbot Logic
+    if AE and UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
+        local targetHead = getClosestPlayer()
+        if targetHead then Cam.CFrame = Cam.CFrame:Lerp(CFrame.new(Cam.CFrame.Position, targetHead.Position), Smooth) end
+    end
+    
     if TE then
         local rp=RaycastParams.new() rp.FilterDescendantsInstances={LP.Character} rp.FilterType=Enum.RaycastFilterType.Exclude
         local res=workspace:Raycast(Cam.CFrame.Position,Cam.CFrame.LookVector*1500,rp)
@@ -69,8 +84,8 @@ vC = RS.RenderStepped:Connect(function()
     end
 end)
 
--- UI SYSTEM (LIRP HUB INTERFACE)
-local SG=Instance.new("ScreenGui") SG.Name="Lirp_Flick_V9" SG.ResetOnSpawn=false
+-- UI SYSTEM
+local SG=Instance.new("ScreenGui") SG.Name="Lirp_Flick_V9_1" SG.ResetOnSpawn=false
 pcall(function() SG.Parent=CG end) if not SG.Parent then SG.Parent=LP:WaitForChild("PlayerGui") end
 
 local MF=Instance.new("Frame") MF.Size=UDim2.new(0,560,0,380) MF.Position=UDim2.new(0.3,0,0.25,0) MF.BackgroundColor3=Color3.fromRGB(12,12,14) MF.BorderSizePixel=1 MF.BorderColor3=Color3.fromRGB(35,35,45) MF.Active=true MF.Draggable=true MF.Parent=SG
@@ -87,7 +102,6 @@ local EP=Instance.new("Frame") EP.Size=UDim2.new(1,-65,1,-50) EP.Position=UDim2.
 tA.MouseButton1Click:Connect(function() AP.Visible=true EP.Visible=false tA.TextColor3=Color3.fromRGB(120,130,230) tE.TextColor3=Color3.fromRGB(150,150,150) end)
 tE.MouseButton1Click:Connect(function() AP.Visible=false EP.Visible=true tA.TextColor3=Color3.fromRGB(150,150,150) tE.TextColor3=Color3.fromRGB(120,130,230) end)
 
--- Вкладка Aimbot (Кнопки Аима и Триггера)
 local aC=Instance.new("TextButton") aC.Size=UDim2.new(0,14,0,14) aC.Position=UDim2.new(0,15,0,30) aC.BackgroundColor3=Color3.fromRGB(30,30,35) aC.BorderSizePixel=0 aC.Text="" aC.Parent=AP
 local aL=Instance.new("TextLabel") aL.Size=UDim2.new(0,250,0,14) aL.Position=UDim2.new(0,40,0,30) aL.BackgroundTransparency=1 aL.Text="Enable Smooth Aimbot (Hold RMB)" aL.TextColor3=Color3.fromRGB(220,220,220) aL.TextSize=14 aL.TextXAlignment=Enum.TextXAlignment.Left aL.Font=Enum.Font.SourceSans aL.Parent=AP
 aC.MouseButton1Click:Connect(function() AE=not AE aC.BackgroundColor3=AE and Color3.fromRGB(65,80,220) or Color3.fromRGB(30,30,35) end)
@@ -96,13 +110,21 @@ local tC=Instance.new("TextButton") tC.Size=UDim2.new(0,14,0,14) tC.Position=UDi
 local tL=Instance.new("TextLabel") tL.Size=UDim2.new(0,250,0,14) tL.Position=UDim2.new(0,40,0,65) tL.BackgroundTransparency=1 tL.Text="Enable Instant Triggerbot" tL.TextColor3=Color3.fromRGB(220,220,220) tL.TextSize=14 tL.TextXAlignment=Enum.TextXAlignment.Left tL.Font=Enum.Font.SourceSans tL.Parent=AP
 tC.MouseButton1Click:Connect(function() TE=not TE tC.BackgroundColor3=TE and Color3.fromRGB(65,80,220) or Color3.fromRGB(30,30,35) end)
 
--- Вкладка ESP
+-- FOV ADJUSTMENT BUTTONS
+local fovLabel=Instance.new("TextLabel") fovLabel.Size=UDim2.new(0,200,0,20) fovLabel.Position=UDim2.new(0,15,0,105) fovLabel.BackgroundTransparency=1 fovLabel.Text="Aim FOV Radius: " .. tostring(_G.LirpFOV) fovLabel.TextColor3=Color3.fromRGB(200,200,200) fovLabel.TextSize=14 fovLabel.TextXAlignment=Enum.TextXAlignment.Left fovLabel.Font=Enum.Font.SourceSans fovLabel.Parent=AP
+
+local btnPlus=Instance.new("TextButton") btnPlus.Size=UDim2.new(0,40,0,25) btnPlus.Position=UDim2.new(0,15,0,135) btnPlus.BackgroundColor3=Color3.fromRGB(35,35,40) btnPlus.Text="[+]" btnPlus.TextColor3=Color3.fromRGB(255,255,255) btnPlus.Font=Enum.Font.SourceSansBold btnPlus.Parent=AP
+local btnMinus=Instance.new("TextButton") btnMinus.Size=UDim2.new(0,40,0,25) btnMinus.Position=UDim2.new(0,65,0,135) btnMinus.BackgroundColor3=Color3.fromRGB(35,35,40) btnMinus.Text="[-]" btnMinus.TextColor3=Color3.fromRGB(255,255,255) btnMinus.Font=Enum.Font.SourceSansBold btnMinus.Parent=AP
+
+btnPlus.MouseButton1Click:Connect(function() _G.LirpFOV=math.min(_G.LirpFOV+20,600) fovLabel.Text="Aim FOV Radius: " .. tostring(_G.LirpFOV) end)
+btnMinus.MouseButton1Click:Connect(function() _G.LirpFOV=math.max(_G.LirpFOV-20,40) fovLabel.Text="Aim FOV Radius: " .. tostring(_G.LirpFOV) end)
+
 local cC=Instance.new("TextButton") cC.Size=UDim2.new(0,14,0,14) cC.Position=UDim2.new(0,15,0,30) cC.BackgroundColor3=Color3.fromRGB(65,80,220) cC.BorderSizePixel=0 cC.Text="" cC.Parent=EP
 local cL=Instance.new("TextLabel") cL.Size=UDim2.new(0,250,0,14) cL.Position=UDim2.new(0,40,0,30) cL.BackgroundTransparency=1 cL.Text="Enable Chams Visuals (All Players)" cL.TextColor3=Color3.fromRGB(220,220,220) cL.TextSize=14 cL.TextXAlignment=Enum.TextXAlignment.Left cL.Font=Enum.Font.SourceSans cL.Parent=EP
 cC.MouseButton1Click:Connect(function() CE=not CE if not CE then cC.BackgroundColor3=Color3.fromRGB(30,30,35) purge() else cC.BackgroundColor3=Color3.fromRGB(65,80,220) end end)
 
 local UB=Instance.new("TextButton") UB.Size=UDim2.new(0,180,0,30) UB.Position=UDim2.new(0,55,1,-40) UB.BackgroundColor3=Color3.fromRGB(25,25,30) UB.BorderSizePixel=1 UB.BorderColor3=Color3.fromRGB(40,40,50) UB.Text="Unload Lirp Hub" UB.TextColor3=Color3.fromRGB(160,160,160) UB.TextSize=13 UB.Font=Enum.Font.SourceSans UB.Parent=MF
-local menuVisible=true local tConn tConn=UIS.InputBegan:Connect(function(i,p) if not p and i.KeyCode==Enum.KeyCode.RightShift then menuVisible=not menuVisible SG.Enabled=menuVisible end end)
+local tConn tConn=UIS.InputBegan:Connect(function(i,p) if not p and i.KeyCode==TOGGLE_KEY then MV=not MV SG.Enabled=MV end end)
 
-UB.MouseButton1Click:Connect(function() SR,TE,CE,AE=false,false,false,false if tConn then tConn:Disconnect() end task.wait(0.05) purge() SG:Destroy() print("[Xeno]: Lirp Hub unloaded!") end)
-print("=========================================\n[Xeno System]: Flick Sniper Arena Lirp V9 | LOADED\n=========================================")
+UB.MouseButton1Click:Connect(function() SR,TE,CE,AE=false,false,false,false if tConn then tConn:Disconnect() end if FovCircle then pcall(function() FovCircle:Destroy() end) end task.wait(0.05) purge() SG:Destroy() print("[Xeno]: Lirp Hub unloaded!") end)
+print("=========================================\n[Xeno System]: Flick Sniper Arena Lirp V9.1 | LOADED\n=========================================")
