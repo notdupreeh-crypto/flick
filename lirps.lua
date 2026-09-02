@@ -140,7 +140,7 @@ local aC = Instance.new("TextButton") aC.Size = UDim2.new(0, 14, 0, 14) aC.Posit
 local aL = Instance.new("TextLabel") aL.Size = UDim2.new(0, 250, 0, 14) aL.Position = UDim2.new(0, 40, 0, 30) aL.BackgroundTransparency = 1 aL.Text = "Enable Smooth Aimbot (Hold RMB)" aL.TextColor3 = Color3.fromRGB(220, 220, 220) aL.TextSize = 14 aL.TextXAlignment = Enum.TextXAlignment.Left aL.Font = Enum.Font.SourceSans aL.Parent = AP 
 aC.MouseButton1Click:Connect(function() _G.AimEnabled = not _G.AimEnabled; aC.BackgroundColor3 = _G.AimEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35); if _G.FovCircle then _G.FovCircle.Visible = (_G.AimEnabled and ScreenGui.Enabled) end end)
 
-local tC = Instance.new("TextButton") tC.Size = UDim2.new(0, 14, 0, 14) tC.Position = UDim2.new(0, 15, 0, 65) tC.BackgroundColor3 = Color3.fromRGB(30, 30, 35) tC.BorderSizePixel = 0 tC.Text = "" tC.Parent = AP 
+local tC = Instance.new("TextButton") tC.Size = UDim2.new(0, 14, 0, 14) tC.Position = UDim2.new(0, 15, 0, 65) wC=Color3.fromRGB(30,30,35) tC.BackgroundColor3 = wC tC.BorderSizePixel = 0 tC.Text = "" tC.Parent = AP 
 local tL = Instance.new("TextLabel") tL.Size = UDim2.new(0, 250, 0, 14) tL.Position = UDim2.new(0, 40, 0, 65) tL.BackgroundTransparency = 1 tL.Text = "Enable Instant Triggerbot" tL.TextColor3 = Color3.fromRGB(220, 220, 220) tL.TextSize = 14 tL.TextXAlignment = Enum.TextXAlignment.Left tL.Font = Enum.Font.SourceSans tL.Parent = AP 
 tC.MouseButton1Click:Connect(function() _G.TriggerEnabled = not _G.TriggerEnabled; tC.BackgroundColor3 = _G.TriggerEnabled and Color3.fromRGB(65, 80, 220) or Color3.fromRGB(30, 30, 35) end)
 
@@ -161,8 +161,11 @@ wC.MouseButton1Click:Connect(function() _G.WallCheckEnabled = not _G.WallCheckEn
 local UB = Instance.new("TextButton") UB.Size = UDim2.new(0, 180, 0, 30) UB.Position = UDim2.new(0, 55, 1, -40) UB.BackgroundColor3 = Color3.fromRGB(25, 25, 30) UB.BorderSizePixel = 1 UB.BorderColor3 = Color3.fromRGB(40, 40, 50) UB.Text = "Unload Lirp Hub" UB.TextColor3 = Color3.fromRGB(160, 160, 160) UB.TextSize = 13 UB.Font = Enum.Font.SourceSans UB.Parent = MF 
 
 KB.MouseButton1Click:Connect(function()
-    if KeyInput.Text == _G.CorrectKey then KF:Destroy(); MainFrame.Visible = true; _G.ScriptRunning = true; print("[Xeno System]: Access Granted!")
-    else KeyInput.Text = ""; KeyInput.PlaceholderText = "WRONG KEY! TRY AGAIN." end
+    if KI.Text == _G.CorrectKey then 
+        KF:Destroy(); MainFrame.Visible = true; _G.ScriptRunning = true; print("[Xeno System]: Access Granted!")
+    else 
+        KI.Text = ""; KI.PlaceholderText = "WRONG KEY! TRY AGAIN." 
+    end
 end)
 
 local tConn
