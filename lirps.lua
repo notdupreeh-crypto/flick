@@ -116,11 +116,20 @@ oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     end
     return oldNamecall(self, ...)
 end)
-print("[Xeno System]: Part 4 Aim Exploits Hooked.")
+print("[Xeno System]: Part 4 Mobile Hooks Loaded.")
 local P = game:GetService("Players")
 local RS = game:GetService("RunService")
+local VIM = game:GetService("VirtualInputManager")
 local LP = P.LocalPlayer
 local Cam = workspace.CurrentCamera
+
+local function mobileFireClick()
+    pcall(function()
+        VIM:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+        task.wait(0.01)
+        VIM:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+    end)
+end
 
 _G.TriggerConnection = RS.RenderStepped:Connect(function()
     if not _G.ScriptRunning then return end
@@ -129,11 +138,13 @@ _G.TriggerConnection = RS.RenderStepped:Connect(function()
         local res = workspace:Raycast(Cam.CFrame.Position, Cam.CFrame.LookVector * 1500, rp)
         if res and res.Instance then 
             local ch = res.Instance.Parent if ch and not ch:FindFirstChildOfClass("Humanoid") then ch = res.Instance.Parent.Parent end 
-            if ch and ch ~= LP.Character and ch:FindFirstChildOfClass("Humanoid") and ch:FindFirstChildOfClass("Humanoid").Health > 0 then mouse1click() end 
+            if ch and ch ~= LP.Character and ch:FindFirstChildOfClass("Humanoid") and ch:FindFirstChildOfClass("Humanoid").Health > 0 then 
+                mobileFireClick()
+            end 
         end 
     end 
 end)
-print("[Xeno System]: Part 5 Triggerbot Machine Ready.")
+print("[Xeno System]: Part 5 Mobile Triggerbot Loaded.")
 local CG = game:GetService("CoreGui")
 local LP = game:GetService("Players").LocalPlayer
 
